@@ -4,8 +4,8 @@ from src.map.type import Type
 class Map:
 
     def __init__(self):
-        self.cheese = []
         self.grid = []
+        self.cheese = []
         self.robot = []
         self.wall = []
 
@@ -13,23 +13,21 @@ class Map:
     # LOADING WORLD
     #
 
-    def load(self, content):
-        rows = content.split('\n')
-
+    def load(self, rows):
         for i, row in enumerate(rows):
-            columns = row.split()
+            columns = list(map(lambda obj: Type.find(obj), row.split()))
 
             self.grid.append([])
 
             for j, column in enumerate(columns):
-                if column == Type.ROBO.value["key"]:
+                if column == Type.PAREDE:
+                    self.wall.append((i, j))
+
+                if column == Type.ROBO:
                     self.robot.append((i, j))
 
-                if column == Type.QUEIJO.value["key"]:
+                if column == Type.QUEIJO:
                     self.cheese.append((i, j))
-
-                if column == Type.PAREDE.value["key"]:
-                    self.wall.append((i, j))
 
                 self.grid[i].append(column)
 
