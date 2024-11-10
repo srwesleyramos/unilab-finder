@@ -9,10 +9,6 @@ class Map:
         self.robot = []
         self.wall = []
 
-    #
-    # LOADING WORLD
-    #
-
     def load(self, rows):
         for i, row in enumerate(rows):
             columns = list(map(lambda obj: Type.find(obj), row.split()))
@@ -31,37 +27,33 @@ class Map:
 
                 self.grid[i].append(column)
 
-    #
-    # SEARCHING PATH
-    #
-
-    def find(self, current, target: Type, trails):
+    def find(self, position, target: Type, trails):
         # Fazendo validações de segurança
 
-        if current in trails:
+        if position in trails:
             return None
 
-        if current[0] < 0 or current[0] >= len(self.grid):
+        if position[0] < 0 or position[0] >= len(self.grid):
             return None
 
-        if current[1] < 0 or current[1] >= len(self.grid[0]):
+        if position[1] < 0 or position[1] >= len(self.grid[0]):
             return None
 
         # Verificando colisões com objetos
 
-        if self.grid[current[0]][current[1]] == Type.PAREDE.value["key"]:
-            return None
+        if self.grid[position[0]][position[1]] == target:
+            return [position]
 
-        if self.grid[current[0]][current[1]] == target.value["key"]:
-            return [current]
+        if self.grid[position[0]][position[1]] == Type.PAREDE:
+            return None
 
         # Calculando caminhos perpendiculares
 
         moves = [
-            (current[0], current[1] + 1),
-            (current[0], current[1] - 1),
-            (current[0] + 1, current[1]),
-            (current[0] - 1, current[1])
+            (position[0], position[1] + 1),
+            (position[0], position[1] - 1),
+            (position[0] + 1, position[1]),
+            (position[0] - 1, position[1])
         ]
 
         # Verificando caminhos perpendiculares
@@ -70,18 +62,11 @@ class Map:
         steps = None
 
         for move in moves:
-            result = self.find(move, target, trails + [current])
+            result = self.find(move, target, trails + [position])
 
             if result is not None:
                 if steps is None or len(result) < steps:
-                    steps = len(result)
                     route = result
+                    steps = len(result)
 
-        return [current] + route if route is not None else None
-
-    #
-    # CHECK IF IT IS POSSIBLE
-    #
-
-    def check(self):
-        return len(self.robot) == 1 and len(self.cheese) == 1 and self.find(self.robot[0], "CHEESE", []) is not None
+        return [position] + route if route is not None else None
