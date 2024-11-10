@@ -19,9 +19,15 @@ class Type(Enum):
         "icon": "9"
     }
 
+    def getKey(self):
+        return self.value["key"]
+
+    def getIcon(self):
+        return self.value["icon"]
+
     @classmethod
     def find(cls, argument):
         for obj in cls:
-            if obj.value["key"] == argument:
+            if obj.getKey() == argument:
                 return obj
         return None
