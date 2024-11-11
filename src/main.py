@@ -3,6 +3,7 @@ from time import sleep
 
 import view
 from map import Map
+from test import generate
 from type import Type
 
 
@@ -36,7 +37,7 @@ def menu():
             print(" O mapa ainda não foi carregado pelo sistema.")
             return
 
-        if not world.check():
+        if not world.check() and option != "2":
             print()
             print(" O mapa fornecido é inválido.")
             return
@@ -82,7 +83,13 @@ def importMap():
 
 
 def generateMap():
-    pass
+    global world
+
+    world = Map()
+    world.load(generate())
+
+    print()
+    print(" O mapa foi gerado com êxito.")
 
 
 def checkMap():
