@@ -1,4 +1,4 @@
-from src.map.type import Type
+from type import Type
 
 
 class Map:

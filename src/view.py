@@ -1,8 +1,8 @@
 from os import system
 from time import sleep
 
-from src.map.map import Map
-from src.map.type import Type
+from map import Map
+from type import Type
 
 
 #

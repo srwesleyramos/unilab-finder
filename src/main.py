@@ -1,9 +1,9 @@
 from os import system
 from time import sleep
 
-from src.map import view
-from src.map.map import Map
-from src.map.type import Type
+import view
+from map import Map
+from type import Type
 
 
 def menu():
