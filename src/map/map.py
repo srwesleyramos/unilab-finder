@@ -9,6 +9,9 @@ class Map:
         self.robot = []
         self.wall = []
 
+    def check(self):
+        return len(self.robot) == 1 and len(self.cheese) == 1 and self.find(self.robot[0], Type.QUEIJO, []) is not None
+
     def load(self, rows):
         for i, row in enumerate(rows):
             columns = list(map(lambda obj: Type.find(obj), row.split()))
