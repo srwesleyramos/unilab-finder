@@ -1,75 +1,63 @@
-import os
-import time
-from typing import List
-
-from colorama import init, Fore, Style
+from os import system
+from time import sleep
 
 from src.map.map import Map
 from src.map.type import Type
 
-init(autoreset=True)
 
+#
+# Renderizar apenas o mapa
+#
 
-def renderMap(world: List[List[str]]):
-    # TODO: refatorar toda a função
+def renderRaw(grid):
+    print()
+    print("─" * (len(grid[0]) * 2 + 3))
 
-    print("")
-    print(f"+{"─" * (len(world[0]) * 2 + 1)}+")
+    for rows in grid:
+        print(f"│ {" ".join(list(map(lambda obj: obj.getIcon(), rows)))} |")
 
-    for rows in world:
-        print("│", end=" ")
-
-        for column in rows:
-            if column == "0":
-                column = Fore.BLACK + column + Style.RESET_ALL
-
-            if column == "1":
-                column = Fore.LIGHTBLACK_EX + column + Style.RESET_ALL
-
-            if column == "7":
-                column = Fore.MAGENTA + column + Style.RESET_ALL
-
-            if column == "9":
-                column = Fore.YELLOW + column + Style.RESET_ALL
-
-            print(column, end=" ")
-
-        print("│")
-
-    print(f"+{"─" * (len(world[0]) * 2 + 1)}+")
+    print("─" * (len(grid[0]) * 2 + 3))
     print()
 
 
-def renderQueue(grid, robot, queue):
+#
+# Atualizar grid e renderizar mapa
+#
+
+def executeQueue(grid, position, queue):
     while len(queue) > 0:
-        os.system('cls')
+        system('cls')
 
-        grid[robot[0]][robot[1]] = '0'
+        grid[position[0]][position[1]] = Type.LIVRE
 
-        robot = queue.pop(0)
+        position = queue.pop(0)
 
-        grid[robot[0]][robot[1]] = '7'
+        grid[position[0]][position[1]] = Type.ROBO
 
-        renderMap(grid)
+        renderRaw(grid)
 
-        time.sleep(0.300)
+        sleep(0.300)
 
+
+#
+# Renderizar o robô indo para o queijo e voltando
+#
 
 def renderPath(world: Map):
     # Copiando a matriz para outro objeto
 
-    grid = [row[:] for row in world.grid]
+    grid = [row[::] for row in world.grid]
 
     # Criando a fila com as posições #1
 
-    robot = world.robot[0]
-    queue = [row[:] for row in world.find(robot, Type.QUEIJO, [])]
+    position = world.robot[0]
+    queue = [row[::] for row in world.find(position, Type.QUEIJO, [])]
 
-    renderQueue(grid, robot, queue)
+    executeQueue(grid, position, queue)
 
     # Criando a fila com as posições #2
 
-    robot = world.cheese[0]
-    queue = [row[:] for row in world.find(robot, Type.ROBO, [])]
+    position = world.cheese[0]
+    queue = [row[::] for row in world.find(position, Type.ROBO, [])]
 
-    renderQueue(grid, robot, queue)
+    executeQueue(grid, position, queue)
