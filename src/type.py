@@ -32,4 +32,4 @@ class Type(Enum):
         for obj in cls:
             if obj.key() == argument:
                 return obj
-        return None
+        return Type.PAREDE
