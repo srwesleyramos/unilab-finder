@@ -1,6 +1,8 @@
 from os import system
 from time import sleep
 
+from colorama import Fore, Style
+
 import view
 from map import Map
 from test import generate
@@ -8,65 +10,62 @@ from type import Type
 
 
 def menu():
-    sleep(3)
-    system('cls')
-
     print()
-    print("   CALCULADORA DE PERCURSO")
-    print("      by @srwesleyramos")
+    print(f"   {Fore.CYAN}CALCULADORA DE PERCURSO")
+    print(f"      {Fore.CYAN}by @srwesleyramos")
     print()
-    print("  1. Importar mapa")
-    print("  2. Apresentar mapa atual")
-    print("  3. Gerar mapa aleatório")
-    print("  4. Verificar viabilidade")
-    print("  5. Caminho ao objetivo")
-    print("  6. Caminho de retorno")
-    print("  7. Apresentar percurso")
-    print("  8. Apresentar dados")
+    print(f"  {Fore.YELLOW}1. {Fore.WHITE}Importar mapa")
+    print(f"  {Fore.YELLOW}2. {Fore.WHITE}Apresentar mapa atual")
+    print(f"  {Fore.YELLOW}3. {Fore.WHITE}Gerar mapa aleatório")
+    print(f"  {Fore.YELLOW}4. {Fore.WHITE}Verificar viabilidade")
+    print(f"  {Fore.YELLOW}5. {Fore.WHITE}Caminho ao objetivo")
+    print(f"  {Fore.YELLOW}6. {Fore.WHITE}Caminho de retorno")
+    print(f"  {Fore.YELLOW}7. {Fore.WHITE}Apresentar percurso")
+    print(f"  {Fore.YELLOW}8. {Fore.WHITE}Apresentar dados{Style.RESET_ALL}")
     print()
 
-    option = input("  >> ")
+    option = input(f"  {Fore.YELLOW}>>{Style.RESET_ALL} ")
 
     if option == "1":
-        importMap()
+        import_map()
     elif option == "3":
-        generateMap()
+        generate_map()
     else:
         if world is None:
             print()
-            print(" O mapa ainda não foi carregado pelo sistema.")
+            print(f" {Fore.RED}O mapa ainda não foi carregado pelo sistema.{Style.RESET_ALL}")
             return
 
         if not world.check() and option != "2":
             print()
-            print(" O mapa fornecido é inválido.")
+            print(f" {Fore.RED}O mapa fornecido é inválido.{Style.RESET_ALL}")
             return
 
         if option == "2":
-            renderMap()
+            render_map()
         elif option == "4":
-            checkMap()
+            check_map()
         elif option == "5":
-            renderRobot()
+            render_robot()
         elif option == "6":
-            renderCheese()
+            render_cheese()
         elif option == "7":
-            renderPath()
+            render_path()
         elif option == "8":
-            renderStats()
+            render_stats()
 
 
 world: Map = None
 
 
-def importMap():
+def import_map():
     global world
 
     print()
-    print(" Qual o nome do arquivo?")
+    print(f" Qual o nome do arquivo?")
     print()
 
-    path = input('  >> ')
+    path = input(f"  {Fore.YELLOW}>>{Style.RESET_ALL} ")
 
     try:
         with open(path, 'r') as text_buffer:
@@ -76,58 +75,61 @@ def importMap():
         world.load(text_content.split("\n"))
 
         print()
-        print(" O novo mapa foi carregado com sucesso.")
+        print(f" {Fore.GREEN}O novo mapa foi carregado com sucesso.{Style.RESET_ALL}")
     except FileNotFoundError:
         print()
-        print(" O arquivo informado é inválido.")
+        print(f" {Fore.RED}O arquivo informado é inválido.{Style.RESET_ALL}")
 
 
-def generateMap():
+def generate_map():
     global world
 
     world = Map()
     world.load(generate())
 
     print()
-    print(" O mapa foi gerado com êxito.")
+    print(f" {Fore.GREEN}O mapa foi gerado com êxito.{Style.RESET_ALL}")
 
 
-def checkMap():
+def check_map():
     print()
-    print(" O mapa carregado " + ("é viável." if world.check() else "não é viável."))
+    print(" O mapa carregado " + (
+        f"{Fore.GREEN}é viável" if world.check() else f"{Fore.GREEN}não é viável") + f"{Style.RESET_ALL}.")
 
 
-def renderMap():
-    view.renderRaw(world.grid)
+def render_map():
+    view.render_raw(world.grid)
 
 
-def renderRobot():
+def render_robot():
     print()
     print(', '.join(map(str, world.find(world.robot[0], Type.QUEIJO, []))))
 
 
-def renderCheese():
+def render_cheese():
     print()
     print(', '.join(map(str, world.find(world.cheese[0], Type.ROBO, []))))
 
 
-def renderPath():
-    view.renderPath(world)
+def render_path():
+    view.render_path(world)
 
 
-def renderStats():
+def render_stats():
     going = world.find(world.robot[0], Type.QUEIJO, [])
     back = world.find(world.cheese[0], Type.ROBO, [])
 
     print()
-    print(f" . Posição do robô: {world.robot[0]}")
-    print(f" . Posição do queijo: {world.cheese[0]}")
-    print(f" . Tamanho do mapa: {len(world.grid)}x{len(world.grid[0])}")
-    print(f" . Passos para objetivo: {len(going)}")
-    print(f" . Passos para retorno: {len(back)}")
-    print(f" . Passos totais: {len(going) + len(back)}")
+    print(f" {Fore.YELLOW}. {Fore.WHITE}Posição do robô: {world.robot[0]}")
+    print(f" {Fore.YELLOW}. {Fore.WHITE}Posição do queijo: {world.cheese[0]}")
+    print(f" {Fore.YELLOW}. {Fore.WHITE}Tamanho do mapa: {len(world.grid)}x{len(world.grid[0])}")
+    print(f" {Fore.YELLOW}. {Fore.WHITE}Passos para objetivo: {len(going)}")
+    print(f" {Fore.YELLOW}. {Fore.WHITE}Passos para retorno: {len(back)}")
+    print(f" {Fore.YELLOW}. {Fore.WHITE}Passos totais: {len(going) + len(back)}{Style.RESET_ALL}")
     print()
 
 
 while True:
+    system('cls')
     menu()
+    sleep(8)
